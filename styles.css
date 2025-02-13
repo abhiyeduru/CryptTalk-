@@ -96,10 +96,7 @@ body {
     margin-bottom: 15px;
 }
 
-.btn:hover {
-    /* background: var(--secondary-color); */
-    /* transform: translateY(-1px); */
-}
+
 
 .social-login {
     display: flex;
