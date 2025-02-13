@@ -1,0 +1,427 @@
+:root {
+    --primary-color: #5B21B6;
+    --secondary-color: #4C1D95;
+    --text-color: #1F2937;
+    --bg-color: #fff;
+    --message-bg: #E5E7EB;
+    --sent-message-bg: #5B21B6;
+    --sent-message-color: #fff;
+    --input-bg: #F3F4F6;
+    --error-color: #DC2626;
+    --success-color: #059669;
+}
+
+[data-theme="dark"] {
+    --primary-color: #7C3AED;
+    --secondary-color: #5B21B6;
+    --text-color: #F9FAFB;
+    --bg-color: #111827;
+    --message-bg: #1F2937;
+    --sent-message-bg: #7C3AED;
+    --sent-message-color: #F9FAFB;
+    --input-bg: #374151;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px;
+    position: relative;
+}
+
+.auth-container {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.auth-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 28px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background: var(--input-bg);
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
+}
+
+.btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 15px;
+}
+
+.btn:hover {
+    /* background: var(--secondary-color); */
+    /* transform: translateY(-1px); */
+}
+
+.social-login {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.social-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.social-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: #64748b;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.divider span {
+    padding: 0 10px;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    color: #64748b;
+}
+
+.auth-switch a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.success-message {
+    color: var(--success-color);
+    font-size: 14px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Chat container styles */
+.chat-container {
+    display: none;
+    grid-template-columns: 300px 1fr;
+    /* gap: 20px; */
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 80vh;
+}
+
+.sidebar {
+    background: var(--secondary-color);
+    padding: 20px;
+    color: white;
+    position: relative;
+}
+
+.chat-area {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-color);
+    overflow: auto;
+}
+
+.chat-header {
+    padding: 20px;
+    background: var(--primary-color);
+    color: white;
+}
+
+.messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    max-width: 70%;
+    padding: 15px;
+    border-radius: 15px;
+    position: relative;
+    word-break: break-word;
+}
+
+.message.sent {
+    background: var(--sent-message-bg);
+    color: var(--sent-message-color);
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.message.received {
+    background: var(--message-bg);
+    color: var(--text-color);
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.message-time {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+.input-area {
+    padding: 20px;
+    background: var(--bg-color);
+    display: flex;
+    gap: 10px;
+}
+
+.input-area input {
+    flex-grow: 1;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text-color);
+}
+
+.input-area button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.input-area button:hover {
+    background: var(--secondary-color);
+}
+
+.user-list {
+    list-style: none;
+    margin-top: 20px;
+}
+
+.user-item {
+    padding: 15px;
+    margin: 5px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.user-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.logout-btn {
+    margin-top: 20px;
+    background: var(--error-color);
+    position: absolute;
+    bottom: 0;
+    width: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+
+.message {
+    max-width: 70%;
+    padding: 15px;
+    border-radius: 15px;
+    position: relative;
+    word-break: break-word;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message.sent {
+    background: var(--sent-message-bg);
+    color: var(--sent-message-color);
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.message.received {
+    background: var(--message-bg);
+    color: var(--text-color);
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.message-actions {
+    display: flex;
+    gap: 8px;
+    align-self: flex-end;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.message:hover .message-actions {
+    opacity: 1;
+}
+
+.message-button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.2);
+    color: inherit;
+}
+
+.message-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.message-button.delete {
+    background: rgba(220, 38, 38, 0.2);
+}
+
+.message-button.delete:hover {
+    background: rgba(220, 38, 38, 0.3);
+}
+
+.message-content {
+    margin-right: 24px;
+}
+
+.message-time {
+    font-size: 12px;
+    opacity: 0.7;
+    align-self: flex-end;
+}
+
+.input-area {
+    padding: 20px;
+    background: var(--bg-color);
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.input-area input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.input-area input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(91, 33, 182, 0.1);
+}
+
+.input-area button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.input-area button:hover {
+    background: var(--secondary-color);
+    transform: translateY(-1px);
+}
+
+.input-area button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Typing indicator styles */
+.typing-indicator {
+    padding: 10px;
+    color: var(--text-color);
+    font-size: 14px;
+    opacity: 0.7;
+    display: none;
+}
