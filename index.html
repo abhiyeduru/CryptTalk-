@@ -9,15 +9,740 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
- <link rel="stylesheet" href="./styles.css">
+ 
 
-    
+    <style>
+        :root {
+            --primary-color: #5B21B6;
+            --secondary-color: #4C1D95;
+            --text-color: #1F2937;
+            --bg-color: #fff;
+            --message-bg: #E5E7EB;
+            --sent-message-bg: #5B21B6;
+            --sent-message-color: #fff;
+            --input-bg: #F3F4F6;
+            --error-color: #DC2626;
+            --success-color: #059669;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7C3AED;
+            --secondary-color: #5B21B6;
+            --text-color: #F9FAFB;
+            --bg-color: #111827;
+            --message-bg: #1F2937;
+            --sent-message-bg: #7C3AED;
+            --sent-message-color: #F9FAFB;
+            --input-bg: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px;
+            position: relative;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: var(--input-bg);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: #64748b;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #64748b;
+        }
+
+        .auth-switch a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* Chat container styles */
+        .chat-container {
+            display: none;
+            grid-template-columns: 300px 1fr;
+            /* gap: 20px; */
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            height: 80vh;
+        }
+
+        .sidebar {
+            background: var(--secondary-color);
+            padding: 20px;
+            color: white;
+        }
+
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-color);
+            overflow: auto;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .clear-chat-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(220, 38, 38, 0.8);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .clear-chat-btn:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: translateY(-1px);
+        }
+
+        .messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+            word-break: break-word;
+        }
+
+        .message.sent {
+            background: var(--sent-message-bg);
+            color: var(--sent-message-color);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            background: var(--message-bg);
+            color: var(--text-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: var(--bg-color);
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex-grow: 1;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .input-area button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .input-area button:hover {
+            background: var(--secondary-color);
+        }
+
+        .user-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .user-item {
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            background: var(--error-color);
+        }
+
+        .logout-btn:hover {
+            background: #B91C1C;
+        }
+        .message {
+            max-width: 70%;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+            word-break: break-word;
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message.sent {
+            background: var(--sent-message-bg);
+            color: var(--sent-message-color);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            background: var(--message-bg);
+            color: var(--text-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 8px;
+            align-self: flex-end;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+
+        .message-button {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.2);
+            color: inherit;
+        }
+
+        .message-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .message-button.delete {
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .message-button.delete:hover {
+            background: rgba(220, 38, 38, 0.3);
+        }
+
+        .message-content {
+            margin-right: 24px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            opacity: 0.7;
+            align-self: flex-end;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: var(--bg-color);
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .input-area input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(91, 33, 182, 0.1);
+        }
+
+        .input-area button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .input-area button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .input-area button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Typing indicator styles */
+        .typing-indicator {
+            padding: 10px;
+            color: var(--text-color);
+            font-size: 14px;
+            opacity: 0.7;
+            display: none;
+        }
+
+        .message-content {
+            margin-right: 24px;
+            min-height: 20px;
+        }
+
+        .message-content.editing {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 4px;
+            outline: none;
+        }
+
+        .edit-buttons {
+            display: none;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .edit-buttons.active {
+            display: flex;
+        }
+
+        .edit-button {
+            padding: 2px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: inherit;
+        }
+
+        .edit-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .edit-button.save {
+            background: rgba(5, 150, 105, 0.2);
+        }
+
+        .edit-button.cancel {
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .message-content-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .message.editing {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-content.editing {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+            border-radius: 4px;
+            outline: 2px solid var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .edited-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-left: 4px;
+        }
+        
+        .edit-buttons {
+            display: none;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .message-actions {
+            position: absolute;
+            right: 0;
+            top: 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+
+        .message-edit-input {
+            background: white;
+            color: black;
+            min-height: 20px;
+            padding: 8px;
+            border-radius: 4px;
+            outline: 2px solid var(--primary-color);
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .message.sent .message-edit-input {
+            color: black;
+            background: white;
+        }
+
+        .edit-buttons {
+            display: none;
+            gap: 8px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+
+        .edit-button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            color: white;
+        }
+
+        .edit-button.save {
+            background: var(--success-color);
+        }
+
+        .edit-button.cancel {
+            background: var(--error-color);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            background: var(--bg-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle::before {
+            content: '🌙';
+            font-size: 20px;
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            content: '☀️';
+        }
+
+        /* Update dark theme colors */
+        [data-theme="dark"] {
+            --primary-color: #7C3AED;
+            --secondary-color: #5B21B6;
+            --text-color: #F9FAFB;
+            --bg-color: #111827;
+            --message-bg: #1F2937;
+            --sent-message-bg: #7C3AED;
+            --sent-message-color: #F9FAFB;
+            --input-bg: #374151;
+            --chat-bg: rgba(17, 24, 39, 0.9);
+        }
+
+        /* Add light theme explicit colors */
+        [data-theme="light"] {
+            --primary-color: #5B21B6;
+            --secondary-color: #4C1D95;
+            --text-color: #1F2937;
+            --bg-color: #fff;
+            --message-bg: #E5E7EB;
+            --sent-message-bg: #5B21B6;
+            --sent-message-color: #fff;
+            --input-bg: #F3F4F6;
+            --chat-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Update chat container background */
+        .chat-container {
+            background: var(--chat-bg);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            background: var(--bg-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-toggle-icon {
+            transform: rotate(360deg);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            border-color: var(--primary-color);
+            background: var(--bg-color);
+        }
+
+        [data-theme="dark"] .theme-toggle-icon {
+            content: '☀️';
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--bg-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border-width: 4px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid white;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .message-button.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-    <body>
-        <button class="theme-toggle" onclick="toggleTheme()"></button>
+    <button id="themeToggle" class="theme-toggle">
+        <span class="theme-toggle-icon">🌙</span>
+    </button>
 
-        <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAA=="/>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAA=="/>
       
         <div class="container">
             <!-- Auth Container -->
@@ -71,6 +796,7 @@
     <div class="chat-area">
         <div class="chat-header">
             <h3 id="currentChat">Select a user to start chatting</h3>
+            <button id="clearChatButton" class="clear-chat-btn" onclick="clearChat()" style="display: none;">Clear Chat</button>
         </div>
         <div id="messages" class="messages"></div>
         <div id="typingIndicator" class="typing-indicator">User is typing...</div>
@@ -83,8 +809,687 @@
                 </div>
             </div>
         </div>
-        
     
-     <script type="module" src="./script.js"></script>
+        <div class="loading-overlay">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <script type="module">
+            
+            // Import Firebase modules
+            import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+            import { 
+                getAuth, 
+                createUserWithEmailAndPassword, 
+                signInWithEmailAndPassword, 
+                onAuthStateChanged,
+                signOut
+            } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+            import { 
+                getFirestore, 
+                collection, 
+                addDoc, 
+                onSnapshot, 
+                query, 
+                orderBy, 
+                serverTimestamp,
+                setDoc,
+                doc,
+                where,
+                getDocs,
+                updateDoc,
+                deleteDoc,
+                writeBatch  // Add this import
+            } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyAxDmW6dbfN3pEJQkltCn_jq2YGGbMRqhA",
+                authDomain: "whatsapp-8fcfe.firebaseapp.com",
+                projectId: "whatsapp-8fcfe",
+                storageBucket: "whatsapp-8fcfe.appspot.com",
+                messagingSenderId: "254784334711",
+                appId: "1:254784334711:web:b927837e290bccaa694f72",
+                measurementId: "G-GEESEBDRWW"
+            };
+    
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+    
+            // Global variables
+            let currentUser = null;
+            let selectedUser = null;
+            let isSignUp = false;
+            let typingTimeout;
+    
+            // Make functions available to window object
+            window.toggleAuthMode = () => {
+                isSignUp = !isSignUp;
+                const title = document.getElementById('authTitle');
+                const submitBtn = document.getElementById('authSubmitBtn');
+                const switchText = document.getElementById('authSwitchText');
+                const switchBtn = document.getElementById('authSwitchBtn');
+                const signupFields = document.getElementById('signupFields');
+    
+                title.textContent = isSignUp ? 'Sign Up' : 'Sign In';
+                submitBtn.textContent = isSignUp ? 'Sign Up' : 'Sign In';
+                switchText.textContent = isSignUp ? 'Already have an account? ' : "Don't have an account? ";
+                switchBtn.textContent = isSignUp ? 'Sign In' : 'Sign Up';
+                signupFields.style.display = isSignUp ? 'block' : 'none';
+            };
+    
+            // Handle authentication
+            window.handleAuth = async () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const username = document.getElementById('username').value;
+                const submitBtn = document.getElementById('authSubmitBtn');
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+    
+                if (!email || !password) {
+                    showError('authError', 'Please fill in all fields');
+                    return;
+                }
+    
+                try {
+                    if (isSignUp) {
+                        if (!username) {
+                            showError('usernameError', 'Username is required');
+                            return;
+                        }
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        await setDoc(doc(db, 'users', userCredential.user.uid), {
+                            username: username,
+                            email: email,
+                            lastSeen: serverTimestamp()
+                        });
+                        showSuccess('authSuccess', 'Account created successfully!');
+                    } else {
+                        await signInWithEmailAndPassword(auth, email, password);
+                        showSuccess('authSuccess', 'Logged in successfully!');
+                    }
+                } catch (error) {
+                    showError('authError', `Authentication error: ${error.message}`);
+                } finally {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    showLoading(false);
+                }
+            };
+    
+            // Auth state observer
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    const userDoc = await getDocs(query(collection(db, 'users'), where('email', '==', user.email)));
+                    
+                    if (!userDoc.empty) {
+                        document.getElementById('authContainer').style.display = 'none';
+                        document.getElementById('chatContainer').style.display = 'grid';
+                        loadUsers();
+                    }
+                } else {
+                    currentUser = null;
+                    document.getElementById('authContainer').style.display = 'block';
+                    document.getElementById('chatContainer').style.display = 'none';
+                }
+            });
+    
+            // Load users
+            async function loadUsers() {
+                const usersRef = collection(db, 'users');
+                onSnapshot(usersRef, (snapshot) => {
+                    const userList = document.getElementById('userList');
+                    userList.innerHTML = '';
+                    
+                    snapshot.forEach((doc) => {
+                        if (doc.id !== currentUser.uid) {
+                            const userData = doc.data();
+                            const li = document.createElement('li');
+                            li.textContent = userData.username || userData.email;
+                            li.className = 'user-item';
+                            li.onclick = () => selectUser(doc.id, userData.username || userData.email);
+                            userList.appendChild(li);
+                        }
+                    });
+                });
+            }
+    
+            // Select user to chat with
+            window.selectUser = (userId, userName) => {
+                selectedUser = userId;
+                document.getElementById('currentChat').textContent = `Chat with ${userName}`;
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('sendButton').disabled = false;
+                document.getElementById('clearChatButton').style.display = 'block'; // Show clear chat button
+                loadMessages();
+            };
+    
+            // Send message
+            window.sendMessage = async () => {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            const sendButton = document.getElementById('sendButton');
+            sendButton.classList.add('loading');
+            sendButton.disabled = true;
+            
+            if (!message || !selectedUser || !currentUser) {
+                return;
+            }
+
+            try {
+                const messageData = {
+                    sender: currentUser.uid,
+                    receiver: selectedUser,
+                    text: message,
+                    timestamp: serverTimestamp(),
+                    senderEmail: currentUser.email
+                };
+
+                await addDoc(collection(db, 'messages'), messageData);
+                messageInput.value = '';
+                
+                // Scroll to bottom after sending
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (error) {
+                console.error("Error sending message:", error);
+                showError('messageError', 'Failed to send message. Please try again.');
+            } finally {
+                sendButton.classList.remove('loading');
+                sendButton.disabled = false;
+            }
+        };
+    
+            // Load messages
+            function loadMessages() {
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML = '';
+    
+                if (!currentUser || !selectedUser) {
+                    console.log("No users selected for chat");
+                    return;
+                }
+    
+                // Create two separate queries for sent and received messages
+                const sentQuery = query(
+                    collection(db, 'messages'),
+                    where('sender', '==', currentUser.uid),
+                    where('receiver', '==', selectedUser),
+                    orderBy('timestamp', 'asc')
+                );
+    
+                const receivedQuery = query(
+                    collection(db, 'messages'),
+                    where('sender', '==', selectedUser),
+                    where('receiver', '==', currentUser.uid),
+                    orderBy('timestamp', 'asc')
+                );
+    
+                // Create a message display function
+                const displayMessage = (doc) => {
+    const data = doc.data();
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${data.sender === currentUser.uid ? 'sent' : 'received'}`;
+    messageDiv.setAttribute('data-id', doc.id);
+    
+    const messageContentWrapper = document.createElement('div');
+    messageContentWrapper.className = 'message-content-wrapper';
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.setAttribute('contenteditable', 'false');
+    messageContent.textContent = data.text;
+    
+    // Add input field for editing (initially hidden)
+    const editInput = document.createElement('div');
+    editInput.className = 'message-edit-input';
+    editInput.contentEditable = true;
+    editInput.style.display = 'none';
+    editInput.textContent = data.text;
+    
+    messageContentWrapper.appendChild(messageContent);
+    messageContentWrapper.appendChild(editInput);
+
+    const editButtons = document.createElement('div');
+    editButtons.className = 'edit-buttons';
+    editButtons.style.display = 'none';
+    
+    if (data.sender === currentUser.uid) {
+        const actionDiv = document.createElement('div');
+        actionDiv.className = 'message-actions';
+
+        const editButton = document.createElement('button');
+        editButton.className = 'message-button edit';
+        editButton.textContent = 'Edit';
+        editButton.onclick = () => {
+            messageContent.style.display = 'none';
+            editInput.style.display = 'block';
+            editButtons.style.display = 'flex';
+            editInput.focus();
+            
+            // Place cursor at the end of the text
+            const range = document.createRange();
+            range.selectNodeContents(editInput);
+            range.collapse(false);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        };
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'message-button delete';
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = () => deleteMessage(doc.id);
+
+        const saveButton = document.createElement('button');
+        saveButton.className = 'edit-button save';
+        saveButton.textContent = 'Save';
+        saveButton.onclick = async () => {
+            const newText = editInput.textContent.trim();
+            if (newText && newText !== data.text) {
+                try {
+                    await updateDoc(doc(db, 'messages', doc.id), {
+                        text: newText,
+                        editedAt: serverTimestamp()
+                    });
+                    messageContent.textContent = newText;
+                } catch (error) {
+                    console.error("Error editing message:", error);
+                    showError('messageError', 'Failed to edit message. Please try again.');
+                }
+            }
+            messageContent.style.display = 'block';
+            editInput.style.display = 'none';
+            editButtons.style.display = 'none';
+        };
+        
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'edit-button cancel';
+        cancelButton.textContent = 'Cancel';
+        cancelButton.onclick = () => {
+            editInput.textContent = data.text;
+            messageContent.style.display = 'block';
+            editInput.style.display = 'none';
+            editButtons.style.display = 'none';
+        };
+        
+        actionDiv.appendChild(editButton);
+        actionDiv.appendChild(deleteButton);
+        editButtons.appendChild(saveButton);
+        editButtons.appendChild(cancelButton);
+        
+        messageContentWrapper.appendChild(actionDiv);
+        messageContentWrapper.appendChild(editButtons);
+    }
+
+    messageDiv.appendChild(messageContentWrapper);
+
+    if (data.timestamp) {
+        const messageTime = document.createElement('div');
+        messageTime.className = 'message-time';
+        const timestamp = data.timestamp.toDate();
+        messageTime.textContent = formatTime(timestamp);
+        messageDiv.appendChild(messageTime);
+    }
+
+    if (data.editedAt) {
+        const editedLabel = document.createElement('span');
+        editedLabel.className = 'edited-label';
+        editedLabel.textContent = ' (edited)';
+        messageDiv.querySelector('.message-time').appendChild(editedLabel);
+    }
+
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+};
+
+                // Set up listeners for both queries
+                const unsubscribeSent = onSnapshot(sentQuery, (snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            displayMessage(change.doc);
+                        } else if (change.type === 'modified') {
+                            const messageDiv = messagesDiv.querySelector(`[data-id="${change.doc.id}"]`);
+                            if (messageDiv) {
+                                messageDiv.querySelector('div').textContent = change.doc.data().text;
+                            }
+                        } else if (change.type === 'removed') {
+                            const messageDiv = messagesDiv.querySelector(`[data-id="${change.doc.id}"]`);
+                            if (messageDiv) {
+                                messagesDiv.removeChild(messageDiv);
+                            }
+                        }
+                    });
+                }, (error) => {
+                    console.error("Error in sent messages listener:", error);
+                    showError('messageError', 'Error loading sent messages');
+                });
+    
+                const unsubscribeReceived = onSnapshot(receivedQuery, (snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            displayMessage(change.doc);
+                        } else if (change.type === 'modified') {
+                            const messageDiv = messagesDiv.querySelector(`[data-id="${change.doc.id}"]`);
+                            if (messageDiv) {
+                                messageDiv.querySelector('div').textContent = change.doc.data().text;
+                            }
+                        } else if (change.type === 'removed') {
+                            const messageDiv = messagesDiv.querySelector(`[data-id="${change.doc.id}"]`);
+                            if (messageDiv) {
+                                messagesDiv.removeChild(messageDiv);
+                            }
+                        }
+                    });
+                }, (error) => {
+                    console.error("Error in received messages listener:", error);
+                    showError('messageError', 'Error loading received messages');
+                });
+    
+                // Store unsubscribe functions for cleanup
+                return () => {
+                    unsubscribeSent();
+                    unsubscribeReceived();
+                };
+            }
+    
+            // Edit message
+            async function editMessage(messageId, oldText) {
+                const newText = prompt("Edit your message:", oldText);
+                if (newText !== null && newText !== oldText) {
+                    try {
+                        await updateDoc(doc(db, 'messages', messageId), {
+                            text: newText,
+                            editedAt: serverTimestamp()
+                        });
+                    } catch (error) {
+                        console.error("Error editing message:", error);
+                        showError('messageError', 'Failed to edit message. Please try again.');
+                    }
+                }
+            }
+    
+            // Delete message
+            async function deleteMessage(messageId) {
+                if (confirm("Are you sure you want to delete this message?")) {
+                    const messageElement = document.querySelector(`[data-id="${messageId}"]`);
+                    const deleteButton = messageElement.querySelector('.delete');
+                    deleteButton.classList.add('loading');
+                    deleteButton.disabled = true;
+                    
+                    try {
+                        await deleteDoc(doc(db, 'messages', messageId));
+                    } catch (error) {
+                        console.error("Error deleting message:", error);
+                        showError('messageError', 'Failed to delete message. Please try again.');
+                    } finally {
+                        deleteButton.classList.remove('loading');
+                        deleteButton.disabled = false;
+                    }
+                }
+            }
+    
+            // Clear chat
+            window.clearChat = async () => {
+                if (!currentUser || !selectedUser) {
+                    showError('messageError', 'No chat selected');
+                    return;
+                }
+            
+                if (confirm("Are you sure you want to clear all messages? This action cannot be undone.")) {
+                    const clearButton = document.getElementById('clearChatButton');
+                    clearButton.classList.add('loading');
+                    clearButton.disabled = true;
+                    showLoading(true);
+                    
+                    try {
+                        const messagesRef = collection(db, 'messages');
+                        const q = query(
+                            messagesRef,
+                            where('sender', 'in', [currentUser.uid, selectedUser]),
+                            where('receiver', 'in', [currentUser.uid, selectedUser])
+                        );
+            
+                        const snapshot = await getDocs(q);
+                        
+                        if (snapshot.empty) {
+                            showError('messageError', 'No messages to clear');
+                            return;
+                        }
+            
+                        // Use writeBatch instead of batch
+                        const batch = writeBatch(db);
+                        snapshot.forEach((doc) => {
+                            batch.delete(doc.ref);
+                        });
+            
+                        await batch.commit();
+                        document.getElementById('messages').innerHTML = '';
+                        showSuccess('messageError', 'Chat cleared successfully');
+                    } catch (error) {
+                        console.error("Error clearing chat:", error);
+                        showError('messageError', 'Failed to clear chat. Please try again.');
+                    } finally {
+                        clearButton.classList.remove('loading');
+                        clearButton.disabled = false;
+                        showLoading(false);
+                    }
+                }
+            };
+    
+            // Typing indicator
+            document.getElementById('messageInput').addEventListener('input', () => {
+                if (typingTimeout) {
+                    clearTimeout(typingTimeout);
+                }
+                setDoc(doc(db, 'typing', currentUser.uid), {
+                    typing: true,
+                    receiver: selectedUser
+                });
+    
+                typingTimeout = setTimeout(() => {
+                    setDoc(doc(db, 'typing', currentUser.uid), {
+                        typing: false,
+                        receiver: selectedUser
+                    });
+                }, 2000);
+            });
+    
+            // Listen for typing indicator
+            onSnapshot(doc(db, 'typing', selectedUser), (doc) => {
+                if (doc.exists() && doc.data().receiver === currentUser.uid) {
+                    const typingIndicator = document.getElementById('typingIndicator');
+                    if (doc.data().typing) {
+                        typingIndicator.style.display = 'block';
+                    } else {
+                        typingIndicator.style.display = 'none';
+                    }
+                }
+            });
+    
+            // Logout function
+            window.logout = async () => {
+                const logoutBtn = document.querySelector('.logout-btn');
+                logoutBtn.classList.add('loading');
+                logoutBtn.disabled = true;
+                showLoading(true);
+                
+                try {
+                    await signOut(auth);
+                    selectedUser = null;
+                    document.getElementById('clearChatButton').style.display = 'none';
+                    showSuccess('authSuccess', 'Logged out successfully!');
+                } catch (error) {
+                    showError('userError', 'Error logging out');
+                } finally {
+                    logoutBtn.classList.remove('loading');
+                    logoutBtn.disabled = false;
+                    showLoading(false);
+                }
+            };
+    
+            // Utility functions
+            function showError(elementId, message) {
+                const element = document.getElementById(elementId);
+                element.textContent = message;
+                element.style.opacity = '1';
+                setTimeout(() => {
+                    element.style.opacity = '0';
+                    setTimeout(() => element.textContent = '', 300);
+                }, 5000);
+            }
+    
+            function showSuccess(elementId, message) {
+                const element = document.getElementById(elementId);
+                element.textContent = message;
+                element.style.opacity = '1';
+                setTimeout(() => {
+                    element.style.opacity = '0';
+                    setTimeout(() => element.textContent = '', 300);
+                }, 3000);
+            }
+    
+            function formatTime(date) {
+                return new Intl.DateTimeFormat('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                }).format(date);
+            }
+    
+            // Theme toggle
+            window.toggleTheme = () => {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                const toggleIcon = document.querySelector('.theme-toggle-icon');
+                
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update the icon
+                if (toggleIcon) {
+                    toggleIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    
+                    // Add animation
+                    toggleIcon.style.transform = 'rotate(360deg)';
+                    setTimeout(() => {
+                        toggleIcon.style.transform = 'none';
+                    }, 300);
+                }
+            };
+    
+            // Add theme initialization on page load
+            document.addEventListener('DOMContentLoaded', () => {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.body.setAttribute('data-theme', savedTheme);
+                
+                // Set initial icon
+                const toggleIcon = document.querySelector('.theme-toggle-icon');
+                if (toggleIcon) {
+                    toggleIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                }
+            });
+    
+            // Event listeners
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+    
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        handleAuth();
+                    }
+                });
+            });
+
+            // Add these new functions for handling inline editing
+            function startEditing(contentElement, editButtons, messageDiv) {
+                // Disable other edit buttons while editing
+                document.querySelectorAll('.message-actions').forEach(actions => {
+                    actions.style.pointerEvents = 'none';
+                });
+                
+                contentElement.setAttribute('contenteditable', 'true');
+                contentElement.classList.add('editing');
+                contentElement.focus();
+                
+                // Store original text and show edit buttons
+                contentElement.dataset.originalText = contentElement.textContent;
+                editButtons.style.display = 'flex';
+                messageDiv.classList.add('editing');
+                
+                // Place cursor at the end
+                const range = document.createRange();
+                range.selectNodeContents(contentElement);
+                range.collapse(false);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+
+            async function saveEdit(messageId, contentElement, editButtons, messageDiv) {
+                const newText = contentElement.textContent.trim();
+                const saveButton = editButtons.querySelector('.save');
+                saveButton.classList.add('loading');
+                saveButton.disabled = true;
+                
+                if (newText && newText !== contentElement.dataset.originalText) {
+                    try {
+                        await updateDoc(doc(db, 'messages', messageId), {
+                            text: newText,
+                            editedAt: serverTimestamp()
+                        });
+                        finishEditing(contentElement, editButtons, messageDiv);
+                    } catch (error) {
+                        console.error("Error editing message:", error);
+                        showError('messageError', 'Failed to edit message. Please try again.');
+                        // Revert to original text on error
+                        contentElement.textContent = contentElement.dataset.originalText;
+                        finishEditing(contentElement, editButtons, messageDiv);
+                    } finally {
+                        saveButton.classList.remove('loading');
+                        saveButton.disabled = false;
+                    }
+                } else {
+                    finishEditing(contentElement, editButtons, messageDiv);
+                }
+            }
+
+            function cancelEdit(contentElement, editButtons, originalText, messageDiv) {
+                contentElement.textContent = originalText;
+                finishEditing(contentElement, editButtons, messageDiv);
+            }
+
+            function finishEditing(contentElement, editButtons, messageDiv) {
+                // Re-enable all edit buttons
+                document.querySelectorAll('.message-actions').forEach(actions => {
+                    actions.style.pointerEvents = 'auto';
+                });
+                
+                contentElement.setAttribute('contenteditable', 'false');
+                contentElement.classList.remove('editing');
+                editButtons.style.display = 'none';
+                messageDiv.classList.remove('editing');
+                delete contentElement.dataset.originalText;
+            }
+
+            // Add this improved event listener for the message input
+            document.getElementById('messageInput').addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { // Allow Shift+Enter for new line
+                    e.preventDefault(); // Prevent default enter behavior
+                    const messageInput = document.getElementById('messageInput');
+                    if (messageInput.value.trim()) { // Only send if there's content
+                        await sendMessage();
+                    }
+                }
+            });
+        </script>
     </body>
     </html>
