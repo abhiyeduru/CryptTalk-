@@ -584,62 +584,6 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--primary-color);
-            background: var(--bg-color);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle::before {
-            content: '🌙';
-            font-size: 20px;
-        }
-
-        [data-theme="dark"] .theme-toggle::before {
-            content: '☀️';
-        }
-
-        /* Update dark theme colors */
-        [data-theme="dark"] {
-            --primary-color: #7C3AED;
-            --secondary-color: #5B21B6;
-            --text-color: #F9FAFB;
-            --bg-color: #111827;
-            --message-bg: #1F2937;
-            --sent-message-bg: #7C3AED;
-            --sent-message-color: #F9FAFB;
-            --input-bg: #374151;
-            --chat-bg: rgba(17, 24, 39, 0.9);
-        }
-
-        /* Add light theme explicit colors */
-        [data-theme="light"] {
-            --primary-color: #5B21B6;
-            --secondary-color: #4C1D95;
-            --text-color: #1F2937;
-            --bg-color: #fff;
-            --message-bg: #E5E7EB;
-            --sent-message-bg: #5B21B6;
-            --sent-message-color: #fff;
-            --input-bg: #F3F4F6;
-            --chat-bg: rgba(255, 255, 255, 0.9);
-        }
-
-        /* Update chat container background */
-        .chat-container {
-            background: var(--chat-bg);
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -735,11 +679,58 @@
             opacity: 0.7;
             pointer-events: none;
         }
+
+        .message-actions {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .message.sent:hover .message-actions {
+            opacity: 1;
+        }
+
+        .message-button {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        .message-button.edit {
+            background: rgba(79, 70, 229, 0.8);
+        }
+
+        .message-button.delete {
+            background: rgba(220, 38, 38, 0.8);
+        }
+
+        .message-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .message-button.edit:hover {
+            background: rgba(79, 70, 229, 1);
+        }
+
+        .message-button.delete:hover {
+            background: rgba(220, 38, 38, 1);
+        }
     </style>
 </head>
 <body>
     <button id="themeToggle" class="theme-toggle">
-        <span class="theme-toggle-icon">🌙</span>
+        <i class="fas fa-sun"></i>
     </button>
 
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGFhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/2FhYf9hYWH/YWFh/2FhYf8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYWFh/2FhYf9hYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhYWH/YWFh/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAA=="/>
@@ -1064,7 +1055,8 @@
 
         const editButton = document.createElement('button');
         editButton.className = 'message-button edit';
-        editButton.textContent = 'Edit';
+        editButton.innerHTML = '<span>✎</span>';  // Edit icon
+        editButton.title = 'Edit message';
         editButton.onclick = () => {
             messageContent.style.display = 'none';
             editInput.style.display = 'block';
@@ -1082,7 +1074,8 @@
         
         const deleteButton = document.createElement('button');
         deleteButton.className = 'message-button delete';
-        deleteButton.textContent = 'Delete';
+        deleteButton.innerHTML = '<span>🗑</span>';  // Delete icon
+        deleteButton.title = 'Delete message';
         deleteButton.onclick = () => deleteMessage(doc.id);
 
         const saveButton = document.createElement('button');
@@ -1280,7 +1273,7 @@
                     }
                 }
             };
-    
+
             // Typing indicator
             document.getElementById('messageInput').addEventListener('input', () => {
                 if (typingTimeout) {
@@ -1363,34 +1356,39 @@
     
             // Theme toggle
             window.toggleTheme = () => {
-                const currentTheme = localStorage.getItem('theme') || 'light';
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                const toggleIcon = document.querySelector('.theme-toggle-icon');
+                const body = document.body;
+                const toggle = document.getElementById('themeToggle');
+                const icon = toggle.querySelector('i');
                 
-                document.body.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                // Update the icon
-                if (toggleIcon) {
-                    toggleIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-                    
-                    // Add animation
-                    toggleIcon.style.transform = 'rotate(360deg)';
-                    setTimeout(() => {
-                        toggleIcon.style.transform = 'none';
-                    }, 300);
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.setAttribute('data-theme', 'light');
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'dark');
                 }
+                
+                // Add animation
+                toggle.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    toggle.style.transform = 'scale(1)';
+                }, 200);
             };
-    
+
             // Add theme initialization on page load
             document.addEventListener('DOMContentLoaded', () => {
                 const savedTheme = localStorage.getItem('theme') || 'light';
-                document.body.setAttribute('data-theme', savedTheme);
+                const toggle = document.getElementById('themeToggle');
+                const icon = toggle.querySelector('i');
                 
-                // Set initial icon
-                const toggleIcon = document.querySelector('.theme-toggle-icon');
-                if (toggleIcon) {
-                    toggleIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                document.body.setAttribute('data-theme', savedTheme);
+                if (savedTheme === 'dark') {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
                 }
             });
     
@@ -1490,6 +1488,239 @@
                     }
                 }
             });
+
+            // Add this utility function at the start of your script
+            function showLoading(show = true) {
+                const overlay = document.querySelector('.loading-overlay');
+                if (overlay) {
+                    overlay.style.display = show ? 'flex' : 'none';
+                }
+            }
+
+            // Update the clear chat function
+            window.clearChat = async () => {
+                if (!currentUser || !selectedUser) {
+                    showError('messageError', 'No chat selected');
+                    return;
+                }
+
+                if (confirm("Are you sure you want to clear all messages? This action cannot be undone.")) {
+                    const clearButton = document.getElementById('clearChatButton');
+                    clearButton.classList.add('loading');
+                    clearButton.disabled = true;
+                    showLoading(true);
+                    
+                    try {
+                        const messagesRef = collection(db, 'messages');
+                        const q = query(
+                            messagesRef,
+                            where('sender', 'in', [currentUser.uid, selectedUser]),
+                            where('receiver', 'in', [currentUser.uid, selectedUser])
+                        );
+
+                        const snapshot = await getDocs(q);
+                        
+                        if (snapshot.empty) {
+                            showError('messageError', 'No messages to clear');
+                            return;
+                        }
+
+                        const batch = writeBatch(db);
+                        snapshot.docs.forEach((doc) => {
+                            batch.delete(doc.ref);
+                        });
+
+                        await batch.commit();
+                        document.getElementById('messages').innerHTML = '';
+                        showSuccess('messageError', 'Chat cleared successfully');
+                    } catch (error) {
+                        console.error("Error clearing chat:", error);
+                        showError('messageError', 'Failed to clear chat. Please try again.');
+                    } finally {
+                        clearButton.classList.remove('loading');
+                        clearButton.disabled = false;
+                        showLoading(false);
+                    }
+                }
+            };
+
+            // Update the displayMessage function to use improved button styling
+            const displayMessage = (doc) => {
+                // ... existing message creation code ...
+                
+                if (data.sender === currentUser.uid) {
+                    const actionDiv = document.createElement('div');
+                    actionDiv.className = 'message-actions';
+
+                    const editButton = document.createElement('button');
+                    editButton.className = 'message-button edit';
+                    editButton.innerHTML = '<span>✎</span>';  // Edit icon
+                    editButton.title = 'Edit message';
+                    // ... rest of edit button code ...
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'message-button delete';
+                    deleteButton.innerHTML = '<span>🗑</span>';  // Delete icon
+                    deleteButton.title = 'Delete message';
+                    // ... rest of delete button code ...
+
+                    actionDiv.appendChild(editButton);
+                    actionDiv.appendChild(deleteButton);
+                    messageContentWrapper.appendChild(actionDiv);
+                }
+                
+                // ... rest of message display code ...
+            };
         </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <script>
+    // Theme toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('themeToggle');
+        const icon = themeToggle.querySelector('i');
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Add click event listener
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            // Add animation
+            themeToggle.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                themeToggle.style.transform = 'scale(1)';
+            }, 200);
+        });
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+    });
+</script>
+
+<!-- Replace the clear chat function with: -->
+<script>
+    // Clear chat functionality
+    window.clearChat = async () => {
+        if (!currentUser || !selectedUser) {
+            showError('messageError', 'No chat selected');
+            return;
+        }
+
+        if (!confirm("Are you sure you want to clear all messages? This action cannot be undone.")) {
+            return;
+        }
+
+        const clearButton = document.getElementById('clearChatButton');
+        clearButton.classList.add('loading');
+        clearButton.disabled = true;
+        showLoading(true);
+
+        try {
+            // Only delete messages where the current user is the sender
+            const messagesRef = collection(db, 'messages');
+            const q = query(
+                messagesRef,
+                where('sender', '==', currentUser.uid),
+                where('receiver', '==', selectedUser)
+            );
+
+            const snapshot = await getDocs(q);
+            
+            if (snapshot.empty) {
+                showError('messageError', 'No messages to clear');
+                return;
+            }
+
+            // Delete messages in batches of 500 (Firestore batch limit)
+            const batches = [];
+            let batch = writeBatch(db);
+            let operationCount = 0;
+
+            snapshot.docs.forEach((doc) => {
+                batch.delete(doc.ref);
+                operationCount++;
+
+                if (operationCount >= 500) {
+                    batches.push(batch.commit());
+                    batch = writeBatch(db);
+                    operationCount = 0;
+                }
+            });
+
+            if (operationCount > 0) {
+                batches.push(batch.commit());
+            }
+
+            await Promise.all(batches);
+            
+            // Refresh the messages display
+            loadMessages();
+            showSuccess('messageError', 'Messages cleared successfully');
+        } catch (error) {
+            console.error("Error clearing chat:", error);
+            showError('messageError', 'Failed to clear chat. Please try again.');
+        } finally {
+            clearButton.classList.remove('loading');
+            clearButton.disabled = false;
+            showLoading(false);
+        }
+    };
+</script>
+
+<!-- Update the theme-toggle CSS -->
+<style>
+    .theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+        background: var(--bg-color);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 0;
+    }
+
+    .theme-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-toggle i {
+        font-size: 20px;
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] .theme-toggle {
+        background: var(--secondary-color);
+    }
+
+    [data-theme="dark"] .theme-toggle i {
+        color: #fff;
+    }
+</style>
     </body>
     </html>
