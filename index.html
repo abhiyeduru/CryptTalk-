@@ -838,6 +838,150 @@
             background-color: rgba(255, 255, 255, 0.2);
             border-radius: 3px;
         }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .container {
+                margin: 0;
+                height: 100vh;
+                max-width: 100%;
+            }
+
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+                width: 80%;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .chat-area {
+                width: 100%;
+            }
+
+            .chat-header {
+                padding: 15px;
+                position: relative;
+            }
+
+            .menu-toggle {
+                display: block;
+                background: transparent;
+                border: none;
+                color: white;
+                font-size: 24px;
+                padding: 5px;
+                margin-right: 10px;
+                cursor: pointer;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .messages {
+                height: calc(100vh - 130px);
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .input-area {
+                padding: 10px;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--bg-color);
+            }
+
+            .input-area input {
+                padding: 10px;
+            }
+
+            .input-area button {
+                padding: 10px 15px;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+            }
+
+            .auth-container {
+                margin: 20px;
+                max-width: 100%;
+                border-radius: 15px;
+            }
+
+            /* User list improvements for mobile */
+            .user-list {
+                max-height: calc(100vh - 180px);
+            }
+
+            .user-item {
+                padding: 12px;
+            }
+
+            .user-item-content {
+                font-size: 14px;
+            }
+
+            /* Search bar adjustments */
+            .search-input {
+                padding: 10px 15px 10px 35px;
+                font-size: 14px;
+            }
+
+            .search-icon {
+                left: 10px;
+                font-size: 14px;
+            }
+        }
+
+        /* Additional styles for very small devices */
+        @media screen and (max-width: 380px) {
+            .message {
+                max-width: 90%;
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .input-area {
+                gap: 5px;
+            }
+
+            .input-area button {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -915,6 +1059,9 @@
             <h3 id="currentChat">Select a user to start chatting</h3>
             <button id="clearChatButton" class="clear-chat-btn" onclick="clearChat()" style="display: none;">Clear Chat</button>
         </div>
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
         <div id="messages" class="messages"></div>
         <div id="typingIndicator" class="typing-indicator">User is typing...</div>
         <div id="messageError" class="error-message"></div>
@@ -930,6 +1077,8 @@
         <div class="loading-overlay">
             <div class="loading-spinner"></div>
         </div>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <script type="module">
             
