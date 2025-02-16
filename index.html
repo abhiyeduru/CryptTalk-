@@ -890,10 +890,232 @@
                 height: 40px;
             }
         }
+
+        /* Mobile styles */
+        @media screen and (max-width: 768px) {
+            body {
+                margin: 0;
+                padding: 0;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .container {
+                margin: 0;
+                height: 100vh;
+                max-width: 100%;
+            }
+
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+                grid-template-columns: 1fr;
+                position: relative;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .chat-area {
+                width: 100%;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .chat-header {
+                padding: 12px;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: white;
+                font-size: 24px;
+                cursor: pointer;
+                z-index: 1001;
+                padding: 8px;
+            }
+
+            .chat-header h3 {
+                margin: 0 48px;
+                text-align: center;
+                font-size: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .messages {
+                flex: 1;
+                padding: 12px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .message {
+                max-width: 85%;
+                margin: 8px 0;
+            }
+
+            .input-area {
+                padding: 12px;
+                position: sticky;
+                bottom: 0;
+                background: var(--bg-color);
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                z-index: 10;
+            }
+
+            .input-area input {
+                padding: 12px;
+                font-size: 16px; /* Better for mobile */
+            }
+
+            .input-area button {
+                padding: 12px 20px;
+                white-space: nowrap;
+            }
+
+            /* Improved overlay for sidebar */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                backdrop-filter: blur(2px);
+                -webkit-backdrop-filter: blur(2px);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            /* Adjust theme toggle position */
+            .theme-toggle {
+                top: auto;
+                bottom: 80px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+
+            /* Adjust message actions for touch */
+            .message-actions {
+                opacity: 1;
+                position: relative;
+                right: auto;
+                top: auto;
+                padding: 4px 0;
+                background: none;
+            }
+
+            .message-button {
+                padding: 6px 12px;
+                margin-left: 8px;
+            }
+
+            /* Fix auth container for mobile */
+            .auth-container {
+                margin: 20px;
+                padding: 24px;
+                width: calc(100% - 40px);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                height: 100vh;
+                z-index: 1000;
+                transition: all 0.3s ease;
+                background: var(--secondary-color);
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .menu-toggle {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 24px;
+                cursor: pointer;
+                padding: 8px;
+                margin-right: 10px;
+                z-index: 1001;
+            }
+
+            .user-list {
+                margin-top: 20px;
+                padding: 0 10px;
+            }
+
+            .user-item {
+                padding: 15px;
+                margin: 5px 0;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .user-item:active {
+                background: rgba(255, 255, 255, 0.2);
+                transform: scale(0.98);
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                backdrop-filter: blur(2px);
+                -webkit-backdrop-filter: blur(2px);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
-    <button id="themeToggle" class="theme-toggle">
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">
         <span class="theme-toggle-icon">🌙</span>
     </button>
 
@@ -950,9 +1172,9 @@
                 
     <div class="chat-area">
         <div class="chat-header">
+            <button class="menu-toggle" aria-label="Toggle menu">☰</button>
             <h3 id="currentChat">Select a user to start chatting</h3>
             <button id="clearChatButton" class="clear-chat-btn" onclick="clearChat()" style="display: none;">Clear Chat</button>
-            <button class="menu-toggle">☰</button>
         </div>
         <div id="messages" class="messages"></div>
         <div id="typingIndicator" class="typing-indicator">User is typing...</div>
@@ -1551,6 +1773,14 @@
                 const toggleIcon = document.querySelector('.theme-toggle-icon');
                 if (toggleIcon) {
                     toggleIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                }
+
+                // Add click event listener to the theme toggle button
+                const themeToggle = document.getElementById('themeToggle');
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', () => {
+                        window.toggleTheme();
+                    });
                 }
             });
     
